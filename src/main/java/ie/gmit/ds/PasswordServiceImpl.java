@@ -6,9 +6,18 @@ import io.grpc.stub.StreamObserver;
 
 import java.util.logging.Logger;
 
+/**
+ * The service implementation of the gRPC password service where all the methods implements.
+ */
 public class PasswordServiceImpl extends PasswordServiceGrpc.PasswordServiceImplBase {
     private static final Logger logger = Logger.getLogger(PasswordServiceImpl.class.getName());
 
+    /**
+     * Take response from client and hash password with salt together.
+     *
+     * @param request          request from client.
+     * @param responseObserver observer.
+     */
     @Override
     public void hash(PasswordRequest request, StreamObserver<PasswordResponse> responseObserver) {
         logger.info("Hashing password...");
@@ -16,7 +25,7 @@ public class PasswordServiceImpl extends PasswordServiceGrpc.PasswordServiceImpl
         byte[] salt = Passwords.getNextSalt();
         byte[] hash = Passwords.hash(request.getPassword().toCharArray(), salt);
 
-        logger.info("uid: " + request.getUserId() + " pw: " + request.getPassword() + " hash: " + hash);
+        // logger.info("uid: " + request.getUserId() + " pw: " + request.getPassword() + " hash: " + hash);  // debug purpose
 
         PasswordResponse pr = PasswordResponse.newBuilder()
                 .setUserId(request.getUserId())
@@ -30,11 +39,17 @@ public class PasswordServiceImpl extends PasswordServiceGrpc.PasswordServiceImpl
         logger.info("Hash password complete!");
     }
 
+    /**
+     * Take response from client and check if the password from client matches the hashed password
+     *
+     * @param request          request from client
+     * @param responseObserver observer
+     */
     @Override
     public void validate(ValidatePassword request, StreamObserver<BoolValue> responseObserver) {
         logger.info("Validating password...");
 
-        logger.info("pw: " + request.getPassword());
+        // logger.info("pw: " + request.getPassword());  // debug purpose
 
         boolean isValid = Passwords.isExpectedPassword(
                 request.getPassword().toCharArray(),
