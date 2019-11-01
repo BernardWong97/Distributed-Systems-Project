@@ -6,8 +6,10 @@ ie\gmit\ds\ValidatePassword.class
 ie\gmit\ds\PasswordRequest$1.class
 ie\gmit\ds\PasswordServiceGrpc$PasswordServiceMethodDescriptorSupplier.class
 ie\gmit\ds\PasswordServiceGrpc$MethodHandlers.class
+ie\gmit\ds\PasswordClient.class
 ie\gmit\ds\PasswordServiceGrpc$PasswordServiceFutureStub.class
 ie\gmit\ds\Passwords.class
+ie\gmit\ds\PasswordServer.class
 ie\gmit\ds\PasswordServiceGrpc$PasswordServiceBlockingStub.class
 ie\gmit\ds\PasswordServiceGrpc.class
 ie\gmit\ds\PasswordResponse$Builder.class

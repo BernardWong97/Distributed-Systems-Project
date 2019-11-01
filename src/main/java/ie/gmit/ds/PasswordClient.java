@@ -1,6 +1,7 @@
 package ie.gmit.ds;
 
 import com.google.protobuf.BoolValue;
+import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
@@ -23,18 +24,18 @@ public class PasswordClient {
         logger.info("Successfully connected to server!");
     }
 
-    public PasswordResponse sendPassword(String uName, String password) {
-        logger.info("Trying to send Username: " + uName + " and Password: " + password);
+    public PasswordResponse sendPassword(int uid, String password) {
+        logger.info("Trying to send UserID: " + uid + " and Password: " + password);
 
         PasswordRequest req = PasswordRequest.newBuilder()
-                .setUserName(uName)
+                .setUserId(uid)
                 .setPassword(password)
                 .build();
 
         PasswordResponse res;
 
         try {
-            res = syncPasswordService.hashPassword(req);
+            res = syncPasswordService.hash(req);
         } catch (StatusRuntimeException e) {
             logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
             return null;
@@ -44,7 +45,7 @@ public class PasswordClient {
         return res;
     }
 
-    public void validatePassword(String password, String salt, String hash) {
+    public void validatePassword(String password, ByteString salt, ByteString hash) {
         logger.info("Validating password: " + password + ", salt: " + salt + " and hash: ");
 
         ValidatePassword req = ValidatePassword.newBuilder()
@@ -73,11 +74,11 @@ public class PasswordClient {
 
     public static void main(String[] args) throws Exception {
         PasswordClient client = new PasswordClient("localhost", 50551);
-        String username = "Bernard";
+        int userID = 123;
         String password = "BernardG00341962";
 
         try{
-            PasswordResponse res = client.sendPassword(username, password);
+            PasswordResponse res = client.sendPassword(userID, password);
             client.validatePassword(password, res.getSalt(), res.getHashedPassword());
         } finally {
             client.shutdown();

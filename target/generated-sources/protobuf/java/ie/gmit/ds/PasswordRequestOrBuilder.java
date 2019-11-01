@@ -8,14 +8,9 @@ public interface PasswordRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string userName = 1;</code>
+   * <code>int32 userId = 1;</code>
    */
-  java.lang.String getUserName();
-  /**
-   * <code>string userName = 1;</code>
-   */
-  com.google.protobuf.ByteString
-      getUserNameBytes();
+  int getUserId();
 
   /**
    * <code>string password = 2;</code>

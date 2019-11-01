@@ -8,32 +8,17 @@ public interface PasswordResponseOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string userName = 1;</code>
+   * <code>int32 userId = 1;</code>
    */
-  java.lang.String getUserName();
-  /**
-   * <code>string userName = 1;</code>
-   */
-  com.google.protobuf.ByteString
-      getUserNameBytes();
+  int getUserId();
 
   /**
-   * <code>string hashedPassword = 2;</code>
+   * <code>bytes hashedPassword = 2;</code>
    */
-  java.lang.String getHashedPassword();
-  /**
-   * <code>string hashedPassword = 2;</code>
-   */
-  com.google.protobuf.ByteString
-      getHashedPasswordBytes();
+  com.google.protobuf.ByteString getHashedPassword();
 
   /**
-   * <code>string salt = 3;</code>
+   * <code>bytes salt = 3;</code>
    */
-  java.lang.String getSalt();
-  /**
-   * <code>string salt = 3;</code>
-   */
-  com.google.protobuf.ByteString
-      getSaltBytes();
+  com.google.protobuf.ByteString getSalt();
 }

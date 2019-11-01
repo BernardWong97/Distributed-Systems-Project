@@ -1,6 +1,7 @@
 package ie.gmit.ds;
 
 import com.google.protobuf.BoolValue;
+import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
 
 import java.util.logging.Logger;
@@ -9,18 +10,18 @@ public class PasswordServiceImpl extends PasswordServiceGrpc.PasswordServiceImpl
     private static final Logger logger = Logger.getLogger(PasswordServiceImpl.class.getName());
 
     @Override
-    public void hashPassword(PasswordRequest request, StreamObserver<PasswordResponse> responseObserver) {
+    public void hash(PasswordRequest request, StreamObserver<PasswordResponse> responseObserver) {
         logger.info("Hashing password...");
 
         byte[] salt = Passwords.getNextSalt();
         byte[] hash = Passwords.hash(request.getPassword().toCharArray(), salt);
 
-        logger.info("uname: " + request.getUserName() + " pw: " + request.getPassword() + " hash: " + hash);
+        logger.info("uid: " + request.getUserId() + " pw: " + request.getPassword() + " hash: " + hash);
 
         PasswordResponse pr = PasswordResponse.newBuilder()
-                .setUserName(request.getUserName())
-                .setHashedPassword(new String(hash))
-                .setSalt(new String(salt))
+                .setUserId(request.getUserId())
+                .setHashedPassword(ByteString.copyFrom(hash))
+                .setSalt(ByteString.copyFrom(salt))
                 .build();
 
         responseObserver.onNext(pr);
@@ -37,8 +38,8 @@ public class PasswordServiceImpl extends PasswordServiceGrpc.PasswordServiceImpl
 
         boolean isValid = Passwords.isExpectedPassword(
                 request.getPassword().toCharArray(),
-                request.getSalt().getBytes(),
-                request.getHashedPassword().getBytes()
+                request.getSalt().toByteArray(),
+                request.getHashedPassword().toByteArray()
         );
 
         BoolValue res = BoolValue.newBuilder()
