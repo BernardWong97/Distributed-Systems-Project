@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="3eaeb169-778c-4514-8e52-ddea1a8f49b0" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ie/gmit/ds/PasswordServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ie/gmit/ds/PasswordServiceImpl.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -33,6 +32,7 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="add_unversioned_files" value="$PROJECT_DIR$/.gitignore" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Modules" />
@@ -111,7 +111,8 @@
       <workItem from="1572566109519" duration="47000" />
       <workItem from="1572566209123" duration="89000" />
       <workItem from="1572566319908" duration="531000" />
-      <workItem from="1572566883985" duration="7069000" />
+      <workItem from="1572566883985" duration="7318000" />
+      <workItem from="1572574321115" duration="367000" />
     </task>
     <servers />
   </component>
