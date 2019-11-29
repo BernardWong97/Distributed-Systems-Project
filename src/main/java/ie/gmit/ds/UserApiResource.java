@@ -1,50 +1,97 @@
 package ie.gmit.ds;
 
+import com.google.protobuf.Message;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Set;
 
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 public class UserApiResource {
-    private HashMap<Integer, User> usersMap = new HashMap<>();
+    private final Validator validator;
+    private PasswordClient passwordClient;
+    private final String HOST = "localhost";
+    private final int PORT = 50551;
 
-    public UserApiResource() {
-        User testUser = new User(1, "Dummy", "test@email.com", "password");
-        usersMap.put(testUser.getUserId(), testUser);
+    public UserApiResource(Validator validator) {
+        this.validator = validator;
+        this.passwordClient = new PasswordClient(HOST, PORT);
     }
 
     @GET
-    public Collection<User> getUsers() {
-        return usersMap.values();
+    public Response getUsers() {
+        return Response.ok(UserDatabase.getUsers()).build();
     }
 
     @GET
     @Path("/{userId}")
-    public User getUserById(@PathParam("userId") Integer id) {
-        return usersMap.get(id);
+    public Response getUserById(@PathParam("userId") Integer id) {
+        if (UserDatabase.getUser(id) != null)
+            return Response.ok(UserDatabase.getUser(id)).build();
+        else
+            return Response.status(Status.NOT_FOUND).entity("User Not Found!").build();
     }
 
     @POST
-    public Collection<User> addUser(User user) {
-        usersMap.put(user.getUserId(), user);
-        return usersMap.values();
+    public Response addUser(User user) {
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
+        User u = UserDatabase.getUser(user.getUserId());
+
+        if (violations.size() > 0) {
+            ArrayList<String> validationMsg = new ArrayList<>();
+            for (ConstraintViolation<User> violation : violations)
+                validationMsg.add(violation.getPropertyPath().toString());
+
+            return Response.status(Status.BAD_REQUEST).entity(validationMsg).build();
+        }
+
+        if (u == null) {
+            passwordClient.hash(user);
+            return Response.status(Status.OK).entity("User successfully added!").build();
+        } else {
+            return Response.status(Status.CONFLICT).entity("User already exists!").build();
+        }
     }
 
     @DELETE
-    @Path("/delete")
-    public void deleteUser(User user) {
-        usersMap.remove(user.getUserId());
+    @Path("/{userId}")
+    public Response deleteUser(@PathParam("userId") Integer id) {
+        if (UserDatabase.getUser(id) != null) {
+            UserDatabase.deleteUser(id);
+            return Response.status(Status.OK).entity("User successfully deleted!").build();
+        } else {
+            return Response.status(Status.NOT_FOUND).entity("User Not Found!").build();
+        }
     }
 
     @PUT
-    @Path("/update")
-    public void updateUser(User user) {
-        if(usersMap.containsKey(user.getUserId())) {
-            usersMap.replace(user.getUserId(), user);
+    @Path("/{userId}")
+    public Response updateUser(@PathParam("userId") Integer id, User user) {
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
+        User u = UserDatabase.getUser(user.getUserId());
+
+        if (violations.size() > 0) {
+            ArrayList<String> validationMsg = new ArrayList<>();
+            for (ConstraintViolation<User> violation : violations)
+                validationMsg.add(violation.getPropertyPath().toString());
+
+            return Response.status(Status.BAD_REQUEST).entity(validationMsg).build();
+        }
+
+        if (u != null) {
+            UserDatabase.updateUser(id, user);
+            passwordClient.hash(user);
+            return Response.status(Status.OK).entity("User successfully updated!").build();
         } else {
-            System.out.println("failed");
+            return Response.status(Status.NOT_FOUND).entity("User Not Found!").build();
         }
     }
 }

@@ -111,6 +111,7 @@ public class PasswordClient {
             @Override
             public void onNext(PasswordResponse passwordResponse) {
                 User u = new User(user.getUserId(), user.getUserName(), user.getEmail(), passwordResponse.getHashedPassword(), passwordResponse.getSalt());
+                UserDatabase.createUser(u.getUserId(), u);
                 logger.info("User: " + passwordResponse);
             }
 

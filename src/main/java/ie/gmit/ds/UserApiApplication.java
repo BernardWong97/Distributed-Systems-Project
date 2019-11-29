@@ -15,11 +15,9 @@ public class UserApiApplication extends Application<UserApiConfig> {
     @Override
     public void run(UserApiConfig userApiConfig, Environment environment) throws Exception {
         logger.info("REST resource register");
-        final UserApiResource resource = new UserApiResource();
+        environment.jersey().register(new UserApiResource(environment.getValidator()));
 
         final UserHealthCheck healthCheck = new UserHealthCheck();
         environment.healthChecks().register("User", healthCheck);
-
-        environment.jersey().register(resource);
     }
 }
