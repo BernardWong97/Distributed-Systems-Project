@@ -19,4 +19,32 @@ public class UserApiResource {
     public Collection<User> getUsers() {
         return usersMap.values();
     }
+
+    @GET
+    @Path("/{userId}")
+    public User getUserById(@PathParam("userId") Integer id) {
+        return usersMap.get(id);
+    }
+
+    @POST
+    public Collection<User> addUser(User user) {
+        usersMap.put(user.getUserId(), user);
+        return usersMap.values();
+    }
+
+    @DELETE
+    @Path("/delete")
+    public void deleteUser(User user) {
+        usersMap.remove(user.getUserId());
+    }
+
+    @PUT
+    @Path("/update")
+    public void updateUser(User user) {
+        if(usersMap.containsKey(user.getUserId())) {
+            usersMap.replace(user.getUserId(), user);
+        } else {
+            System.out.println("failed");
+        }
+    }
 }

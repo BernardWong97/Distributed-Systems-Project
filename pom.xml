@@ -110,7 +110,7 @@
                                         implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>ie.gmit.ds.ArtistApiApplication</mainClass>
+                                    <mainClass>ie.gmit.ds.UserApiApplication</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
@@ -122,8 +122,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>7</source>
-                    <target>7</target>
+                    <source>8</source>
+                    <target>8</target>
                 </configuration>
             </plugin>
         </plugins>
