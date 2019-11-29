@@ -1,16 +1,12 @@
 package ie.gmit.ds;
 
-import com.google.protobuf.Message;
-
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Set;
 
 @Path("/users")
@@ -90,6 +86,30 @@ public class UserApiResource {
             UserDatabase.updateUser(id, user);
             passwordClient.hash(user);
             return Response.status(Status.OK).entity("User successfully updated!").build();
+        } else {
+            return Response.status(Status.NOT_FOUND).entity("User Not Found!").build();
+        }
+    }
+
+    @PUT
+    @Path("/login")
+    public Response validateUser(UserLogin userLogin) {
+        Set<ConstraintViolation<UserLogin>> violations = validator.validate(userLogin);
+        User u = UserDatabase.getUser(userLogin.getUserId());
+
+        if (violations.size() > 0) {
+            ArrayList<String> validationMsg = new ArrayList<>();
+            for (ConstraintViolation<UserLogin> violation : violations)
+                validationMsg.add(violation.getPropertyPath().toString());
+
+            return Response.status(Status.BAD_REQUEST).entity(validationMsg).build();
+        }
+
+        if (u != null) {
+           if(passwordClient.validatePassword(userLogin.getPassword(), u.getSalt(), u.getHashedPassword()))
+                return Response.status(Status.OK).entity("User successfully logged in!").build();
+           else
+               return Response.status(Status.NOT_FOUND).entity("Invalid Password!").build();
         } else {
             return Response.status(Status.NOT_FOUND).entity("User Not Found!").build();
         }
