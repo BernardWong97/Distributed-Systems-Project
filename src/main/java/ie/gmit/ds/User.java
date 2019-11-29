@@ -8,6 +8,9 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+/**
+ * POJO class representation for User
+ */
 public class User {
 
     @NotNull
@@ -27,9 +30,20 @@ public class User {
     private ByteString hashedPassword;
     private ByteString salt;
 
+    /**
+     * Default constructor for Jackson deserialization.
+     */
     public User() {
     }
 
+    /**
+     * Use for creating user.
+     *
+     * @param userId id
+     * @param userName name
+     * @param email email
+     * @param password password
+     */
     public User(int userId, String userName, String email, String password) {
         this.userId = userId;
         this.userName = userName;
@@ -37,6 +51,15 @@ public class User {
         this.password = password;
     }
 
+    /**
+     * Use for storing user after hashing password
+     *
+     * @param userId id
+     * @param userName name
+     * @param email email
+     * @param hashedPassword hashed password
+     * @param salt salt for hashing and de-hashing
+     */
     public User(int userId, String userName, String email, ByteString hashedPassword, ByteString salt) {
         this.userId = userId;
         this.userName = userName;
