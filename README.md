@@ -40,6 +40,9 @@ To check application health, enter http://localhost:8081/healthcheck in browser.
 The SwaggerHub URL of the OpenAPI definition for the REST API in this application:
 https://app.swaggerhub.com/apis/BernardWong97/UserAPI/1
 
+### Testing
+For testing please use [Postman application](https://www.getpostman.com/) to test all HTTP requests of the application.
+
 ## Author
 
 **Name:** Bernard Wong  
