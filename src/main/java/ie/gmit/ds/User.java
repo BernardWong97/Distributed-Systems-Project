@@ -17,14 +17,14 @@ public class User {
     private int userId;
 
     @NotBlank
-    @Length(min=2, max=255)
+    @Length(min = 2, max = 255)
     private String userName;
 
     @Pattern(regexp = ".+@.+\\.[a-z]+")
     private String email;
 
     @NotBlank
-    @Length(min=2, max=15)
+    @Length(min = 2, max = 15)
     private String password;
 
     private ByteString hashedPassword;
@@ -39,9 +39,9 @@ public class User {
     /**
      * Use for creating user.
      *
-     * @param userId id
+     * @param userId   id
      * @param userName name
-     * @param email email
+     * @param email    email
      * @param password password
      */
     public User(int userId, String userName, String email, String password) {
@@ -54,11 +54,11 @@ public class User {
     /**
      * Use for storing user after hashing password
      *
-     * @param userId id
-     * @param userName name
-     * @param email email
+     * @param userId         id
+     * @param userName       name
+     * @param email          email
      * @param hashedPassword hashed password
-     * @param salt salt for hashing and de-hashing
+     * @param salt           salt for hashing and de-hashing
      */
     public User(int userId, String userName, String email, ByteString hashedPassword, ByteString salt) {
         this.userId = userId;

@@ -20,7 +20,7 @@ public class UserApiApplication extends Application<UserApiConfig> {
      * Also do health check on the environment = http://localhost:8081/healthcheck
      *
      * @param userApiConfig the config
-     * @param environment environment
+     * @param environment   environment
      * @throws Exception
      */
     @Override

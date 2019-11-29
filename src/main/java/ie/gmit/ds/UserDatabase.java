@@ -40,7 +40,8 @@ public class UserDatabase {
 
     /**
      * Add a user into the hash-map.
-     * @param id id
+     *
+     * @param id   id
      * @param user user to be added
      */
     public static void createUser(int id, User user) {
@@ -49,7 +50,8 @@ public class UserDatabase {
 
     /**
      * Update an existing user in the hash-map.
-     * @param id id
+     *
+     * @param id   id
      * @param user user to be updated
      */
     public static void updateUser(int id, User user) {
@@ -58,6 +60,7 @@ public class UserDatabase {
 
     /**
      * Delete an existing user from the hash-map by id.
+     *
      * @param id id
      */
     public static void deleteUser(int id) {

@@ -61,8 +61,8 @@ public class UserApiResource {
      *
      * @param user the user to be create
      * @return "User already exists" if the user exists in the database.
-     *         "User successfully added!" if the user is created successfully.
-     *         validation error message if error in validation occurs.
+     * "User successfully added!" if the user is created successfully.
+     * validation error message if error in validation occurs.
      */
     @POST
     public Response addUser(User user) {
@@ -91,7 +91,7 @@ public class UserApiResource {
      *
      * @param id id
      * @return "User successfully deleted!" if user is deleted.
-     *         "User Not Found!" if user does not exist in the database.
+     * "User Not Found!" if user does not exist in the database.
      */
     @DELETE
     @Path("/{userId}")
@@ -107,11 +107,11 @@ public class UserApiResource {
     /**
      * Update a user in the database.
      *
-     * @param id id
+     * @param id   id
      * @param user the user to be update
      * @return "User not found" if the user does not exist in the database.
-     *         "User successfully updated!" if the user is updated successfully.
-     *         validation error message if error in validation occurs.
+     * "User successfully updated!" if the user is updated successfully.
+     * validation error message if error in validation occurs.
      */
     @PUT
     @Path("/{userId}")
@@ -141,9 +141,9 @@ public class UserApiResource {
      *
      * @param userLogin user input login object
      * @return "User successfully logged in!" if password is correct.
-     *         "Invalid Password!" if password is incorrect.
-     *         "User Not Found!" if user does not exist in the database.
-     *         validation error message if error in validation occurs.
+     * "Invalid Password!" if password is incorrect.
+     * "User Not Found!" if user does not exist in the database.
+     * validation error message if error in validation occurs.
      */
     @PUT
     @Path("/login")
@@ -160,10 +160,10 @@ public class UserApiResource {
         }
 
         if (u != null) {
-           if(passwordClient.validatePassword(userLogin.getPassword(), u.getSalt(), u.getHashedPassword()))
+            if (passwordClient.validatePassword(userLogin.getPassword(), u.getSalt(), u.getHashedPassword()))
                 return Response.status(Status.OK).entity("User successfully logged in!").build();
-           else
-               return Response.status(Status.NOT_FOUND).entity("Invalid Password!").build();
+            else
+                return Response.status(Status.NOT_FOUND).entity("Invalid Password!").build();
         } else {
             return Response.status(Status.NOT_FOUND).entity("User Not Found!").build();
         }
