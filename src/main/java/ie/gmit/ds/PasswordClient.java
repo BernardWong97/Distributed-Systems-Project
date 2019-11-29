@@ -4,7 +4,9 @@ import com.google.protobuf.BoolValue;
 import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.grpc.stub.StreamObserver;
 
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -17,6 +19,7 @@ public class PasswordClient {
     private static final Logger logger = Logger.getLogger(PasswordClient.class.getName());
     private final ManagedChannel channel;
     private final PasswordServiceGrpc.PasswordServiceBlockingStub syncPasswordService;
+    private final PasswordServiceGrpc.PasswordServiceStub asyncPasswordService;
 
     /**
      * Creates a channel to connect the Password Server through the service.
@@ -30,6 +33,7 @@ public class PasswordClient {
                 .usePlaintext()
                 .build();
         syncPasswordService = PasswordServiceGrpc.newBlockingStub(channel);
+        asyncPasswordService = PasswordServiceGrpc.newStub(channel);
         logger.info("Successfully connected to server!");
     }
 
@@ -69,7 +73,7 @@ public class PasswordClient {
      * @param salt     stored salt.
      * @param hash     hashed password.
      */
-    public void validatePassword(String password, ByteString salt, ByteString hash) {
+    public boolean validatePassword(String password, ByteString salt, ByteString hash) {
         logger.info("Validating password: " + password + ", salt: " + salt + " and hash: ");
 
         ValidatePassword req = ValidatePassword.newBuilder()
@@ -84,12 +88,13 @@ public class PasswordClient {
             res = syncPasswordService.validate(req);
         } catch (StatusRuntimeException e) {
             logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
-            return;
+            return false;
         }
 
-        String msg = (res.getValue()) ? "Correct" : "Failed";
+        String msg = (res.getValue()) ? "Valid" : "Invalid";
 
-        logger.info(msg);
+        logger.info("Password " + msg);
+        return res.getValue();
     }
 
     /**
@@ -99,6 +104,37 @@ public class PasswordClient {
      */
     public void shutdown() throws InterruptedException {
         channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
+    }
+
+    public void hash(User user) {
+        StreamObserver<PasswordResponse> responseStreamObserver = new StreamObserver<PasswordResponse>() {
+            @Override
+            public void onNext(PasswordResponse passwordResponse) {
+                User u = new User(user.getUserId(), user.getUserName(), user.getEmail(), passwordResponse.getHashedPassword(), passwordResponse.getSalt());
+                logger.info("User: " + passwordResponse);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                Status status = Status.fromThrowable(throwable);
+
+                logger.log(Level.WARNING, "RPC Error: {0}", status);
+            }
+
+            @Override
+            public void onCompleted() {
+                logger.info("hash complete.");
+            }
+        };
+
+        try {
+            asyncPasswordService.hash(PasswordRequest.newBuilder()
+                    .setUserId(user.getUserId())
+                    .setPassword(user.getPassword())
+                    .build(), responseStreamObserver);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+        }
     }
 
     /**

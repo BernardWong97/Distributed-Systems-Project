@@ -74,4 +74,16 @@ public class User {
     public ByteString getSalt() {
         return salt;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", hashedPassword=" + hashedPassword +
+                ", salt=" + salt +
+                '}';
+    }
 }
